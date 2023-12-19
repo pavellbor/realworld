@@ -4,7 +4,8 @@
   "description": "Имплементация REST API для блога на Express и MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write src/**/*.{js,ts} --log-level silent"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/pavellbor/realworld/issues"
   },
-  "homepage": "https://github.com/pavellbor/realworld#readme"
+  "homepage": "https://github.com/pavellbor/realworld#readme",
+  "devDependencies": {
+    "prettier": "^3.1.1"
+  }
 }
