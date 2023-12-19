@@ -1,0 +1,26 @@
+{
+  "name": "realworld",
+  "version": "0.0.0",
+  "description": "Имплементация REST API для блога на Express и MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavellbor/realworld.git"
+  },
+  "keywords": [
+    "realworld",
+    "node",
+    "express",
+    "mongodb",
+    "blog"
+  ],
+  "author": "Pavel Borisov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavellbor/realworld/issues"
+  },
+  "homepage": "https://github.com/pavellbor/realworld#readme"
+}
