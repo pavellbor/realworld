@@ -4,6 +4,9 @@
   "description": "Имплементация REST API для блога на Express и MongoDB",
   "main": "index.js",
   "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf dist",
+    "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write src/**/*.{js,ts} --log-level silent"
   },
@@ -25,6 +28,9 @@
   },
   "homepage": "https://github.com/pavellbor/realworld#readme",
   "devDependencies": {
-    "prettier": "^3.1.1"
+    "@types/node": "^20.10.5",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
   }
 }
