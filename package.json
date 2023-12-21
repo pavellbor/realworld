@@ -4,6 +4,7 @@
   "description": "Имплементация REST API для блога на Express и MongoDB",
   "main": "index.js",
   "scripts": {
+    "start": "npm run build && node ./dist/index.js",
     "build": "npm run clean && npm run compile",
     "clean": "rimraf dist",
     "compile": "tsc",
