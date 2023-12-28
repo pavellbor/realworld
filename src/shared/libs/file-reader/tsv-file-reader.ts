@@ -17,7 +17,7 @@ export class TSVFileReader implements FileReader {
     }
 
     return this.rawData
-      .split(/(?<!\\)\\n/)
+      .split('\r\n')
       .filter((row) => row.trim().length > 0)
       .map((line) => line.split('\t'))
       .map(
