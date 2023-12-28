@@ -36,7 +36,7 @@ export class CLIApplication {
     const parsedCommand = CommandParser.parse(argv);
     const [commandName] = Object.keys(parsedCommand);
     const command = this.getCommand(commandName);
-    const commandArguments = parsedCommand[commandName];
+    const commandArguments = parsedCommand[commandName] || [];
 
     command.execute(...commandArguments);
   }
