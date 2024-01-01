@@ -1,5 +1,5 @@
 import { ArticleType } from './article-type.enum';
-import { Tag } from './tag.type';
+import { Category } from './category.type';
 import { User } from './user.type';
 
 export type Article = {
@@ -7,7 +7,7 @@ export type Article = {
   body: string;
   postDate: Date;
   image: string;
-  tags: Tag[];
+  categories: Category[];
   type: ArticleType;
   author: User;
 };

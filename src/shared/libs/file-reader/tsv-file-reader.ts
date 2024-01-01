@@ -20,13 +20,13 @@ export class TSVFileReader implements FileReader {
       .split('\r\n')
       .filter((row) => row.trim().length > 0)
       .map((line) => line.split('\t'))
-      .map(([title, body, image, type, tags, createdDate, email, username, avatarPath]) => {
+      .map(([title, body, image, type, categories, createdDate, email, username, avatarPath]) => {
         return {
           title,
           body,
           postDate: new Date(createdDate),
           image,
-          tags: tags.split(';').map((name) => ({ name })),
+          categories: categories.split(';').map((name) => ({ name })),
           type: ArticleType[type as 'Private' | 'Public'],
           author: {
             email,
