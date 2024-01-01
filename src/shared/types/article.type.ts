@@ -4,7 +4,6 @@ import { User } from './user.type';
 
 export type Article = {
   title: string;
-  description: string;
   body: string;
   postDate: Date;
   image: string;

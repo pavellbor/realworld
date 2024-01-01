@@ -20,34 +20,20 @@ export class TSVFileReader implements FileReader {
       .split('\r\n')
       .filter((row) => row.trim().length > 0)
       .map((line) => line.split('\t'))
-      .map(
-        ([
+      .map(([title, body, image, type, tags, createdDate, email, username, avatarPath]) => {
+        return {
           title,
-          description,
           body,
+          postDate: new Date(createdDate),
           image,
-          type,
-          tags,
-          createdDate,
-          email,
-          username,
-          avatarPath,
-        ]) => {
-          return {
-            title,
-            description,
-            body,
-            postDate: new Date(createdDate),
-            image,
-            tags: tags.split(';').map((name) => ({ name })),
-            type: ArticleType[type as 'Private' | 'Public'],
-            author: {
-              email,
-              username,
-              avatarPath,
-            },
-          };
-        },
-      );
+          tags: tags.split(';').map((name) => ({ name })),
+          type: ArticleType[type as 'Private' | 'Public'],
+          author: {
+            email,
+            username,
+            avatarPath,
+          },
+        };
+      });
   }
 }
