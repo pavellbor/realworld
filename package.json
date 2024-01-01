@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write src/**/*.{js,ts} --log-level silent",
     "ts": "ts-node",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "mock:server": "json-server ./mocks/mock-server-data.json --host 127.0.0.1 --port 3123"
   },
   "repository": {
     "type": "git",
