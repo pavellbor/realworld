@@ -1,6 +1,8 @@
 import got from 'got';
-import { MockServerData } from '../../shared/types/index.js';
+import { appendFile } from 'node:fs/promises';
 import { Command } from './command.interface.js';
+import { MockServerData } from '../../shared/types/index.js';
+import { TSVArticleGenerator } from '../../shared/libs/article-generator/index.js';
 
 export class GenerateCommand implements Command {
   private initialData: MockServerData;
@@ -13,6 +15,14 @@ export class GenerateCommand implements Command {
     }
   }
 
+  private async write(filepath: string, articleCount: number): Promise<void> {
+    const tsvArticleGenerator = new TSVArticleGenerator(this.initialData);
+
+    for (let i = 0; i < articleCount; i++) {
+      await appendFile(filepath, `${tsvArticleGenerator.generate()}\n`, { encoding: 'utf8' });
+    }
+  }
+
   public getName(): string {
     return '--generate';
   }
@@ -22,7 +32,10 @@ export class GenerateCommand implements Command {
     const articleCount = Number.parseInt(count, 10);
 
     try {
-      this.load(url);
+      await this.load(url);
+      await this.write(filepath, articleCount);
+
+      console.info(`File ${filepath} was created!`);
     } catch (error: unknown) {
       console.error("Can't generate data");
 
