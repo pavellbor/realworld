@@ -1,3 +1,4 @@
+import { createArticle, getErrorMessage } from '../../shared/helpers/index.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
 import { Command } from './command.interface.js';
 
@@ -6,20 +7,27 @@ export class ImportCommand implements Command {
     return '--import';
   }
 
-  public execute(...parameters: string[]): void {
+  private onImportedLine(line: string): void {
+    const article = createArticle(line);
+    console.info(article);
+  }
+
+  private onCompleteImport(count: number): void {
+    console.info(`${count} was imported`);
+  }
+
+  public async execute(...parameters: string[]): Promise<void> {
     const [filename] = parameters;
     const fileReader = new TSVFileReader(filename.trim());
 
+    fileReader.on('line', this.onImportedLine);
+    fileReader.on('end', this.onCompleteImport);
+
     try {
       fileReader.read();
-      console.log(fileReader.toArray());
     } catch (err) {
-      if (!(err instanceof Error)) {
-        throw err;
-      }
-
       console.error(`Can't import data from file: ${filename}`);
-      console.error(`Details: ${err.message}`);
+      console.error(getErrorMessage(err));
     }
   }
 }
