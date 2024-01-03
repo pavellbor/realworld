@@ -1,6 +1,6 @@
-import { ArticleType } from './article-type.enum';
-import { Category } from './category.type';
-import { User } from './user.type';
+import { ArticleType } from './article-type.enum.js';
+import { Category } from './category.type.js';
+import { User } from './user.type.js';
 
 export type Article = {
   title: string;

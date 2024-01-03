@@ -1,2 +1,2 @@
-export * from './article-generator.interface';
-export * from './tsv-article-generator';
+export * from './article-generator.interface.js';
+export * from './tsv-article-generator.js';

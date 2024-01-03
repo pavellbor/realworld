@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import { generateRandomValue, getRandomItem, getRandomItems } from '../../helpers';
-import { ArticleType, MockServerData } from '../../types';
-import { ArticleGenerator } from './article-generator.interface';
+import { generateRandomValue, getRandomItem, getRandomItems } from '../../helpers/index.js';
+import { ArticleType, MockServerData } from '../../types/index.js';
+import { ArticleGenerator } from './article-generator.interface.js';
 
 const FIRST_WEEK_DAY = 1;
 const LAST_WEEK_DAY = 7;
