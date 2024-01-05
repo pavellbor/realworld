@@ -1,11 +1,22 @@
 import { pino, Logger as PinoInstance } from 'pino';
 import { Logger } from './logger.interface.js';
+import { getCurrentModuleDirectoryPath } from '../../helpers/index.js';
+import { resolve } from 'node:path';
 
 export class PinoLogger implements Logger {
   private readonly logger: PinoInstance;
 
   constructor() {
-    this.logger = pino();
+    const modulePath = getCurrentModuleDirectoryPath();
+    const logFilePath = 'logs/rest.log';
+    const destination = resolve(modulePath, '../../..', logFilePath);
+
+    const fileTransport = pino.transport({
+      target: 'pino/file',
+      options: { destination },
+    });
+
+    this.logger = pino(fileTransport);
   }
 
   public debug(message: string, ...args: unknown[]): void {
