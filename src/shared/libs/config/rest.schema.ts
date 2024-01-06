@@ -4,7 +4,7 @@ export type RestSchema = {
   PORT: number;
 };
 
-const configRestSchema = convict<RestSchema>({
+export const configRestSchema = convict<RestSchema>({
   PORT: {
     doc: 'Port for incoming connections',
     format: 'port',
