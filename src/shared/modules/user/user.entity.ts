@@ -1,7 +1,9 @@
 import { defaultClasses, getModelForClass, prop } from '@typegoose/typegoose';
 import { User } from '../../types/index.js';
 
-export class UserEntity extends defaultClasses.TimeStamps implements User {
+export interface UserEntity extends defaultClasses.Base, defaultClasses.TimeStamps {}
+
+export class UserEntity implements User {
   @prop({
     unique: true,
     required: true,
