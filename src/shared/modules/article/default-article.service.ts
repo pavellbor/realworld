@@ -1,8 +1,9 @@
-import { DocumentType, defaultClasses, types } from '@typegoose/typegoose';
-import { ArticleEntity, ArticleService, CreateArticleDto } from './index.js';
+import { DocumentType, types } from '@typegoose/typegoose';
+import { ArticleEntity, ArticleService, CreateArticleDto, UpdateArticleDto } from './index.js';
 import { inject, injectable } from 'inversify';
-import { Component } from '../../types/index.js';
+import { Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
+import { DEFAULT_ARTICLE_COUNT } from './article.constant.js';
 
 @injectable()
 export class DefaultArticleService implements ArticleService {
@@ -20,6 +21,57 @@ export class DefaultArticleService implements ArticleService {
   }
 
   public async findById(articleId: string): Promise<DocumentType<ArticleEntity> | null> {
-    return this.articleModel.findById(articleId).exec();
+    return this.articleModel.findById(articleId).populate(['userId', 'categories']).exec();
+  }
+
+  public async find(): Promise<DocumentType<ArticleEntity>[]> {
+    return this.articleModel.find().populate(['userId', 'categories']).exec();
+  }
+
+  public async deleteById(articleId: string): Promise<DocumentType<ArticleEntity> | null> {
+    return this.articleModel.findByIdAndDelete(articleId).exec();
+  }
+
+  public async updateById(
+    articleId: string,
+    dto: UpdateArticleDto,
+  ): Promise<DocumentType<ArticleEntity> | null> {
+    return this.articleModel
+      .findByIdAndUpdate(articleId, dto, { new: true })
+      .populate(['userId', 'categories'])
+      .exec();
+  }
+
+  public async findByCategoryId(
+    categoryId: string,
+    count?: number | undefined,
+  ): Promise<DocumentType<ArticleEntity>[]> {
+    const limit = count ?? DEFAULT_ARTICLE_COUNT;
+    return this.articleModel
+      .find({ categories: categoryId }, {}, { limit })
+      .populate(['userId', 'categories'])
+      .exec();
+  }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.findById(documentId)) !== null;
+  }
+
+  public async findNew(count: number): Promise<DocumentType<ArticleEntity>[]> {
+    return this.articleModel
+      .find()
+      .sort({ createdAt: SortType.Down })
+      .limit(count)
+      .populate(['userId', 'categories'])
+      .exec();
+  }
+
+  public async findDiscussed(count: number): Promise<DocumentType<ArticleEntity>[]> {
+    return this.articleModel
+      .find()
+      .sort({ commentCount: SortType.Down })
+      .limit(count)
+      .populate(['userId', 'categories'])
+      .exec();
   }
 }
