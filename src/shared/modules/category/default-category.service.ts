@@ -1,8 +1,8 @@
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CategoryService } from './category-service.inteface.js';
 import { CategoryEntity } from './category.entity.js';
-import { CreateCategoryDto } from './index.js';
-import { Component } from '../../types/index.js';
+import { CreateCategoryDto, MAX_CATEGORIES_COUNT } from './index.js';
+import { Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { inject, injectable } from 'inversify';
 
@@ -46,6 +46,47 @@ export class DefaultCategoryService implements CategoryService {
   }
 
   public async find(): Promise<DocumentType<CategoryEntity>[]> {
-    return this.categoryModel.find();
+    return this.categoryModel.aggregate([
+      {
+        $lookup: {
+          from: 'articles',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$$categoryId', '$categories'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+              },
+            },
+          ],
+          as: 'articles',
+        },
+      },
+      {
+        $addFields: {
+          id: { $toString: '$_id' },
+          articleCount: { $size: '$articles' },
+        },
+      },
+      {
+        $unset: 'articles',
+      },
+      {
+        $limit: MAX_CATEGORIES_COUNT,
+      },
+      {
+        $sort: {
+          articleCount: SortType.Down,
+        },
+      },
+    ]);
   }
 }
