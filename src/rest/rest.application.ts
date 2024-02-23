@@ -5,15 +5,23 @@ import { Component } from '../shared/types/index.js';
 import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/database.js';
 import { ArticleService } from '../shared/modules/article/article-service.interface.js';
+import express, { Express } from 'express';
+import { Controller, ExceptionFilter } from '../shared/libs/rest/index.js';
 
 @injectable()
 export class RestApplication {
+  private server: Express;
+
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
-    @inject(Component.ArticleService) private readonly articleService: ArticleService,
-  ) {}
+    @inject(Component.CategoryController) private readonly categoryController: Controller,
+    @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.UserController) private readonly userController: Controller,
+  ) {
+    this.server = express();
+  }
 
   private async _initDb() {
     const mongoUri = getMongoURI(
@@ -27,6 +35,24 @@ export class RestApplication {
     return this.databaseClient.connect(mongoUri);
   }
 
+  private async _initServer() {
+    const port = this.config.get('PORT');
+    this.server.listen(port);
+  }
+
+  public async _initControllers() {
+    this.server.use('/categories', this.categoryController.router);
+    this.server.use('/users', this.userController.router);
+  }
+
+  public async _initMiddleware() {
+    this.server.use(express.json());
+  }
+
+  public async _initExceptionFilters() {
+    this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
+  }
+
   public async init() {
     this.logger.info('Application initilization');
 
@@ -34,7 +60,20 @@ export class RestApplication {
     await this._initDb();
     this.logger.info('Init database completed!');
 
-    const article = await this.articleService.findById('65a4fc9b86dd53b3d7f393ac');
-    console.log(article);
+    this.logger.info('Init app-level middleware');
+    await this._initMiddleware();
+    this.logger.info('App-level middleware initialization completed');
+
+    this.logger.info('Init controllers...');
+    await this._initControllers();
+    this.logger.info('Controllers initialization completed!');
+
+    this.logger.info('Init exception filters');
+    await this._initExceptionFilters();
+    this.logger.info('Exception filters initialization compleated');
+
+    this.logger.info('Try to init server...');
+    await this._initServer();
+    this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
   }
 }

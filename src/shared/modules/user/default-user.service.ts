@@ -24,7 +24,7 @@ export class DefaultUserService implements UserService {
     return result;
   }
 
-  public async findByEmailOrUsername(
+  public async findByEmailAndUsername(
     email: string,
     username: string,
   ): Promise<DocumentType<UserEntity> | null> {
@@ -33,8 +33,16 @@ export class DefaultUserService implements UserService {
     });
   }
 
+  public async findByEmailOrUsername(
+    emailOrUsername: string,
+  ): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
+  }
+
   public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const existedUser = await this.findByEmailOrUsername(dto.email, dto.username);
+    const existedUser = await this.findByEmailOrUsername(dto.email);
 
     if (existedUser) {
       return existedUser;
